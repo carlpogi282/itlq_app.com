@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        .answer {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .incorrect {
+            color: red;
+        }
+        .correct {
+            color: green;
+        }
+        .feedback {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .lesson-container, .quiz-container, .summary-container {
+            margin-bottom: 20px;
+        }
+        video {
+            width: 100%;
+            border-radius: 8px;
+        }
+        /* Splash Screen */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #splashScreen img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        #splashScreen p {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splashScreen">
+        <img src="C:\Users\dessl\OneDrive\Documents\ITLQ App\src\quiz.png" alt="App Logo"> <!-- Replace with your logo image -->
+        <p>Welcome to the IT Quiz App</p>
+        <button type="button" class="btn" onclick="startApp()">Start Lesson</button>
+    </div>
+
+    <div class="container">
+        <h1>IT Quiz App</h1>
+
+        <!-- Lesson Sections -->
+        <div id="lessonSection" class="section">
+            <div id="lesson1" class="lesson-container">
+                <h2>Lesson 1: Introduction to IT</h2>
+                <p>Learn the basics of IT, including hardware, software, and networking fundamentals.</p>
+                <video controls>
+                    <source src="C:\Users\dessl\OneDrive\Documents\ITLQ App\video\lesson1_summary.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <button type="button" class="btn" onclick="startQuiz(1)">Start Quiz</button>
+            </div>
+            <div id="lesson2" class="lesson-container">
+                <h2>Lesson 2: Operating Systems</h2>
+                <p>Explore various operating systems and their functionalities.</p>
+                <video controls>
+                    <source src="C:\Users\dessl\OneDrive\Documents\ITLQ App\video\lesson2_summary.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <button type="button" class="btn" onclick="startQuiz(2)">Start Quiz</button>
+            </div>
+            <div id="lesson3" class="lesson-container">
+                <h2>Lesson 3: Programming Basics</h2>
+                <p>Introduction to basic programming concepts and languages.</p>
+                <video controls>
+                    <source src="C:\Users\dessl\OneDrive\Documents\ITLQ App\video/lesson3_summary.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <button type="button" class="btn" onclick="startQuiz(3)">Start Quiz</button>
+            </div>
+            <div id="lesson4" class="lesson-container">
+                <h2>Lesson 4: Networking Basics</h2>
+                <p>Understand the fundamental concepts of networking.</p>
+                <video controls>
+                    <source src="C:\Users\dessl\OneDrive\Documents\ITLQ App\video\lesson4_summary.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <button type="button" class="btn" onclick="startQuiz(4)">Start Quiz</button>
+            </div>
+            <div id="lesson5" class="lesson-container">
+                <h2>Lesson 5: Cybersecurity</h2>
+                <p>Learn about cybersecurity and protecting systems from threats.</p>
+                <video controls>
+                    <source src="C:\Users\dessl\OneDrive\Documents\ITLQ App\video\lesson5_summary.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <button type="button" class="btn" onclick="startQuiz(5)">Start Quiz</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quizSection" class="section">
+            <h2 id="quizTitle">Quiz</h2>
+            <div id="questions"></div>
+            <button type="button" class="btn" onclick="submitQuiz()">Submit Quiz</button>
+        </div>
+
+        <!-- Summary Section (after all lessons) -->
+        <div id="summarySection" class="section">
+            <h2>Overall Summary</h2>
+            <p>Here is a final summary video covering all the lessons.</p>
+            <video controls>
+                <source src="overall_summary.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        const lessons = [
+            {
+                title: 'Lesson 1: Introduction to IT',
+                questions: [
+                    { question: 'What is IT?', choices: ['Information Technology', 'Information Transaction', 'Internet Technology'], answer: 0 },
+                    { question: 'Which of these is hardware?', choices: ['CPU', 'Operating System', 'Software'], answer: 0 },
+                ]
+            },
+            {
+                title: 'Lesson 2: Operating Systems',
+                questions: [
+                    { question: 'What does an Operating System do?', choices: ['Manages hardware and software', 'Encrypts data', 'Manages network connections'], answer: 0 },
+                ]
+            },
+            {
+                title: 'Lesson 3: Programming Basics',
+                questions: [
+                    { question: 'What is a variable?', choices: ['A storage location', 'A type of software', 'A programming language'], answer: 0 },
+                ]
+            },
+            {
+                title: 'Lesson 4: Networking Basics',
+                questions: [
+                    { question: 'What is a LAN?', choices: ['Local Area Network', 'Large Area Network', 'Long Area Network'], answer: 0 },
+                ]
+            },
+            {
+                title: 'Lesson 5: Cybersecurity',
+                questions: [
+                    { question: 'What is a firewall?', choices: ['A network security system', 'A type of malware', 'A programming language'], answer: 0 },
+                ]
+            }
+        ];
+
+        let currentLesson = 1;
+
+        function startApp() {
+            // Hide splash screen and show the first lesson
+            document.getElementById('splashScreen').style.display = 'none';
+            document.getElementById('lessonSection').classList.add('active');
+            document.getElementById(`lesson${currentLesson}`).classList.add('active');
+        }
+
+        function startQuiz(lessonNumber) {
+            currentLesson = lessonNumber;
+            document.getElementById('lessonSection').classList.remove('active');
+            document.getElementById('quizSection').classList.add('active');
+            loadQuiz(lessonNumber);
+        }
+
+        function loadQuiz(lessonNumber) {
+            const lesson = lessons[lessonNumber - 1];
+            const quizContainer = document.querySelector('#questions');
+            quizContainer.innerHTML = '';
+
+            lesson.questions.forEach((q, index) => {
+                quizContainer.innerHTML += `
+                    <div class="question">
+                        <p>${index + 1}. ${q.question}</p>
+                        ${q.choices.map((choice, i) => `
+                            <label class="answer">
+                                <input type="radio" name="q${index}" value="${i}">
+                                ${choice}
+                            </label>
+                        `).join('')}
+                        <p id="feedback${index}" class="feedback"></p>
+                    </div>
+                `;
+            });
+        }
+
+        function submitQuiz() {
+            const lesson = lessons[currentLesson - 1];
+            let score = 0;
+            let totalQuestions = lesson.questions.length;
+
+            lesson.questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const feedbackElement = document.getElementById(`feedback${index}`);
+
+                if (selected) {
+                    if (parseInt(selected.value) === q.answer) {
+                        score++;
+                        feedbackElement.textContent = 'Correct!';
+                        feedbackElement.className = 'feedback correct';
+                    } else {
+                        feedbackElement.textContent = `Incorrect. The correct answer is: ${q.choices[q.answer]}`;
+                        feedbackElement.className = 'feedback incorrect';
+                    }
+                } else {
+                    feedbackElement.textContent = `No answer selected. The correct answer is: ${q.choices[q.answer]}`;
+                    feedbackElement.className = 'feedback incorrect';
+                }
+            });
+
+            alert(`You scored ${score} out of ${totalQuestions}`);
+
+            if (currentLesson < 5) {
+                document.getElementById(`lesson${currentLesson + 1}`).classList.add('active');
+                document.getElementById(`lesson${currentLesson}`).classList.remove('active');
+                document.getElementById('quizSection').classList.remove('active');
+                document.getElementById('lessonSection').classList.add('active');
+                currentLesson++;
+            } else {
+                document.getElementById('quizSection').classList.remove('active');
+                document.getElementById('summarySection').classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
